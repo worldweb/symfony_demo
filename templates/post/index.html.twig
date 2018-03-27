@@ -21,7 +21,7 @@
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
                 <td>{{ post.body }}</td>
-                <td>{{ post.created_at ? post.created_at|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ post.created_at ? post.created_at|datetime : '' }}</td>
                 <td>
                     <a href="{{ path('post_show', {'id': post.id}) }}">show</a>
                     <a href="{{ path('post_edit', {'id': post.id}) }}">edit</a>

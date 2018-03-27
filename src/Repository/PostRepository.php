@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
+
 
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +21,21 @@ class PostRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Post::class);
     }
+    public function findLatest()
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT p
+                FROM App:Post p
+                WHERE p.created_at <= :now
+                ORDER BY p.created_at DESC
+            ')
+            ->setParameter('now', new \DateTime())
+        ;
 
+        return $query->execute();
+    }
+    
 //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */

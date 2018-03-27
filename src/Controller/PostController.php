@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Event\AfterSubmitPostEvent;
 
 /**
  * @Route("/post")
@@ -20,7 +21,8 @@ class PostController extends Controller
      */
     public function index(PostRepository $postRepository): Response
     {
-        return $this->render('post/index.html.twig', ['posts' => $postRepository->findAll()]);
+        $latestPosts = $postRepository->findLatest();
+        return $this->render('post/index.html.twig', ['posts' => $latestPosts]);
     }
 
     /**
@@ -36,6 +38,9 @@ class PostController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($post);
             $em->flush();
+            $post_id = $post->getId();
+//            $afterSave = new AfterSubmitPostEvent($post_id);
+//            $this->dispatcher->dispatch('post.after_save', $afterSave);
 
             return $this->redirectToRoute('post_index');
         }
