@@ -3,13 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\PostMeta;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use App\Repository\PostMetaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Event\AfterSubmitPostEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Acme\Store\EventSubscriber\StoreSubscriber;
 
 /**
  * @Route("/post")
@@ -39,8 +43,10 @@ class PostController extends Controller
             $em->persist($post);
             $em->flush();
             $post_id = $post->getId();
-//            $afterSave = new AfterSubmitPostEvent($post_id);
-//            $this->dispatcher->dispatch('post.after_save', $afterSave);
+            
+            $afterSave = new AfterSubmitPostEvent($post_id);
+            $dispatcher = new EventDispatcher();
+            $dispatcher->dispatch(AfterSubmitPostEvent::NAME, $afterSave);
 
             return $this->redirectToRoute('post_index');
         }

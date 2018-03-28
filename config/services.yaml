@@ -23,6 +23,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+    save_post_event_subscriber:
+        class: App\EventSubscriber\SavePostEventSubscriber
+        tags:
+            - { name: kernel.event_subscriber, event: post.event.after_save, method: onPostSave }
         
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
