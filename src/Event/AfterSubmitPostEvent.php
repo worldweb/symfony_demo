@@ -2,7 +2,6 @@
 namespace App\Event;
 
 use Symfony\Component\EventDispatcher\Event;
-use App\Entity\PostMeta;
 
 class AfterSubmitPostEvent extends Event
 {
